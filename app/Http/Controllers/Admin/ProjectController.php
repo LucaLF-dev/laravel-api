@@ -94,7 +94,7 @@ class ProjectController extends Controller
         if ($request->has('technologies')) {
             $project->technologies()->sync($data['technologies']);
         } else {
-            // $post->tags()->sync([]);
+
             $project->technologies()->detach();
         }
 
