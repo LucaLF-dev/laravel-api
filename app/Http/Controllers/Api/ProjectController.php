@@ -11,7 +11,7 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
 
-        dd($slug);
+
 
         $results = Project::all();
         //$results = Project::with('type',)->paginate(5);
