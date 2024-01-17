@@ -13,8 +13,8 @@ class ProjectController extends Controller
 
 
 
-        $results = Project::all();
-        //$results = Project::with('type',)->paginate(5);
+        //$results = Project::all();
+        $results = Project::with('type', 'technologies')->paginate(5);
 
 
 
@@ -24,8 +24,15 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function show(Request $request, $slug)
+    public function show(Project $project)
     {
-        dd($slug);
+        //dd($slug);
+
+        $project->load('type', 'technologies');
+
+        return response()->json([
+
+            'project' => $project
+        ]);
     }
 }
