@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Technology;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ProjectSeeder extends Seeder
 {
@@ -56,6 +57,7 @@ class ProjectSeeder extends Seeder
 
             $new_project->title = $project['title'];
             $new_project->description = $project['description'];
+            $new_project->slug = Str::slug($new_project->title, '-');
             $new_project->type_id = $ids->random();
 
             $new_project->save();

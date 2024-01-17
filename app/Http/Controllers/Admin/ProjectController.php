@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -26,8 +27,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $types = Type::all();
-        $technologies = Technology::all();
+        $types = Type::orderBy('name', 'ASC')->get();
+        $technologies = Technology::orderBy('name', 'ASC')->get();
         return view('admin.projects.create', compact('types','technologies'));
     }
 
@@ -47,6 +48,7 @@ class ProjectController extends Controller
 
 
         $data = $request->all();
+        $data['slug'] = Str::slug($data['title'], '-');
 
         $project = Project::create($data);
 
@@ -70,8 +72,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $types = Type::all();
-        $technologies = Technology::all();
+        $types = Type::orderBy('name', 'ASC')->get();
+        $technologies = Technology::orderBy('name', 'ASC')->get();
 
         return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
@@ -82,13 +84,14 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $request->validate([
-            'title' => 'required|max:255',
+            'title' => ['required', 'max:255', 'string', Rule::unique('projects')->ignore($project->id)] ,
             'description' => 'required',
             'type_id' => 'nullable|exists:types,id',
             'technologies' => 'exists:technologies,id',
 
         ]);
         $data = $request->all();
+        $data['slug'] = Str::slug($data['title'], '-');
         $project->update($data);
 
         if ($request->has('technologies')) {
